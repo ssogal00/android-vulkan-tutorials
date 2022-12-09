@@ -12,7 +12,7 @@ apply plugin: 'com.android.application'
  * 1. remove the pre-downloaded dir(if exists): rm -fr $projectRoot.layerLibs
  * 2. update the version number for ${LAYER_VERSION} in the following line:
  */
-def LAYER_VERSION = "1.2.176.0"
+def LAYER_VERSION = "1.3.231.1"
 
 // Variables shared between download layer binary and project build script.
 def LAYER_SITE ="https://github.com/KhronosGroup/Vulkan-ValidationLayers"
@@ -74,6 +74,7 @@ android {
         }
     }
     buildFeatures.prefab = true
+    namespace 'com.android.example.vulkan.tutorials.two'
 }
 
 dependencies {
