@@ -201,6 +201,8 @@ bool OpenGLEngine::Initialize(android_app* app)
 
     glClearColor(1,0,0,1);
 
+    mInitialized=true;
+
     return true;
 }
 

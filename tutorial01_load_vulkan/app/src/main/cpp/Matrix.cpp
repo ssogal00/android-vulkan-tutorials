@@ -19,8 +19,13 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs)
 
 Matrix operator+(const Matrix& lhs, const Matrix& rhs)
 {
-    Matrix rhsTranspose = rhs.Transpose();
-    return Matrix{};
+    Matrix result{};
+    result.mRows[0] = vaddq_f32(lhs.mRows[0], rhs.mRows[0]);
+    result.mRows[1] = vaddq_f32(lhs.mRows[1], rhs.mRows[1]);
+    result.mRows[2] = vaddq_f32(lhs.mRows[2], rhs.mRows[2]);
+    result.mRows[3] = vaddq_f32(lhs.mRows[3], rhs.mRows[3]);
+
+    return result;
 }
 void Matrix::Transpose()
 {

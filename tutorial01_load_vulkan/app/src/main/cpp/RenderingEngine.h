@@ -11,5 +11,8 @@ public:
     virtual void Terminate() =0;
     virtual void OnPause()=0;
     virtual void OnResume(class android_app* app)=0;
+    virtual bool IsInitialized() const { return mInitialized; }
+protected:
+    bool mInitialized=false;
 };
 

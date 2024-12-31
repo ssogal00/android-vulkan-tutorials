@@ -17,11 +17,9 @@ public:
     void Terminate() override;
 private:
 
-// Global variables
     VkInstance mVulkanInstance;
     VkPhysicalDevice mTutorialGpu;
     VkDevice mDevice;
     VkSurfaceKHR mSurface;
-    bool mInitialized=false;
 };
 
