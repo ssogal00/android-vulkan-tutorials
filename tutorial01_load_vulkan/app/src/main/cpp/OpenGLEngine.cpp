@@ -249,3 +249,7 @@ void OpenGLEngine::OnResume(android_app* app)
 
     eglMakeCurrent(mDisplay,mSurface,mSurface, mEGLContext);
 }
+
+void OpenGLEngine::Terminate() {
+
+}

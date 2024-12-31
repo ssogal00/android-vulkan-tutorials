@@ -1,23 +1,21 @@
-//
-// Created by haminlove on 2024-12-23.
-//
 
-#ifndef ASSEMBLYTEST_OPENGLENGINE_H
-#define ASSEMBLYTEST_OPENGLENGINE_H
+#pragma once
 
+#include "RenderingEngine.h"
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <GLES3/gl32.h>
 
-class OpenGLEngine
+class OpenGLEngine : public RenderingEngine
 {
 public:
-    bool Initialize(class android_app* app );
-    void Clear();
-    void SwapBuffer();
-    void Tick(float Seconds);
-    void OnPause();
-    void OnResume(class android_app* app);
+    bool Initialize(struct android_app* app ) override;
+    void Clear() override;
+    void SwapBuffer() override;
+    void Tick(float Seconds) override;
+    void OnPause() override;
+    void OnResume(class android_app* app) override;
+    void Terminate() override;
 private:
     EGLDisplay mDisplay = EGL_NO_DISPLAY;
     EGLSurface  mSurface = EGL_NO_SURFACE;
@@ -30,5 +28,3 @@ private:
     int mSelectedConfigIndex = -1;
 };
 
-
-#endif //ASSEMBLYTEST_OPENGLENGINE_H

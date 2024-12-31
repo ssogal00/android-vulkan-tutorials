@@ -26,8 +26,12 @@ public:
     float32x4_t mRows[4];
 
     void DebugPrint() const;
+
+    static void MatrixTest();
 };
 
 Matrix operator*(const Matrix& lhs, const Matrix& rhs);
+
+
 
 #endif //ASSEMBLYTEST_MATRIX_H

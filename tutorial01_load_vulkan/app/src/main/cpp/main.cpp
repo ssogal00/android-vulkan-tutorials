@@ -19,28 +19,15 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 
 #include "Vector.h"
+#include "Matrix.h"
 #include "OpenGLEngine.h"
+#include "VulkanEngine.h"
+#include "LogUtil.h"
 #include <chrono>
 
-OpenGLEngine* GOpenGLEngine = nullptr;
+RenderingEngine* GRenderingEngine = nullptr;
 
-// Android log function wrappers
-static const char* kTAG = "Vulkan-Tutorial01";
-#define LOGI(...) \
-  ((void)__android_log_print(ANDROID_LOG_INFO, kTAG, __VA_ARGS__))
-#define LOGW(...) \
-  ((void)__android_log_print(ANDROID_LOG_WARN, kTAG, __VA_ARGS__))
-#define LOGE(...) \
-  ((void)__android_log_print(ANDROID_LOG_ERROR, kTAG, __VA_ARGS__))
 
-// Vulkan call wrapper
-#define CALL_VK(func)                                                 \
-  if (VK_SUCCESS != (func)) {                                         \
-    __android_log_print(ANDROID_LOG_ERROR, "Tutorial ",               \
-                        "Vulkan error. File[%s], line[%d]", __FILE__, \
-                        __LINE__);                                    \
-    assert(false);                                                    \
-  }
 
 // Global variables
 VkInstance tutorialInstance;
@@ -53,19 +40,22 @@ VkSurfaceKHR tutorialSurface;
 bool initialized_ = false;
 bool initialize(android_app* app);
 
+const bool bUseVulkan=false;
+
 // Functions interacting with Android native activity
 void android_main(struct android_app* state);
 void terminate(void);
 void handle_cmd(android_app* app, int32_t cmd);
 
-void HandleOpenGLCmd(android_app* app, int32_t cmd);
+void HandleAppCmd(android_app* app, int32_t cmd);
 
 // typical Android NativeActivity entry function
 void android_main(struct android_app* app)
 {
     Vector4::Vector4Test();
+    Matrix::MatrixTest();
 
-    app->onAppCmd = HandleOpenGLCmd;
+    app->onAppCmd = HandleAppCmd;
 
     int events;
     android_poll_source* source;
@@ -78,11 +68,11 @@ void android_main(struct android_app* app)
 
         prevTime = std::chrono::high_resolution_clock::now();
 
-        if(GOpenGLEngine)
+        if(GRenderingEngine)
         {
-            GOpenGLEngine->Tick(elapsed.count() / 1000.f);
-            GOpenGLEngine->Clear();
-            GOpenGLEngine->SwapBuffer();
+            GRenderingEngine->Tick(elapsed.count() / 1000.f);
+            GRenderingEngine->Clear();
+            GRenderingEngine->SwapBuffer();
         }
 
         if (ALooper_pollAll(initialized_ ? 1 : 0, nullptr, &events, (void**)&source) >= 0)
@@ -237,18 +227,28 @@ void terminate(void) {
 }
 
 
-
-void HandleOpenGLCmd(android_app* app, int32_t cmd)
+void HandleAppCmd(android_app* app, int32_t cmd)
 {
     switch (cmd)
     {
         case APP_CMD_INIT_WINDOW:
-            GOpenGLEngine = new OpenGLEngine{};
-            GOpenGLEngine->Initialize(app);
+            if(bUseVulkan)
+            {
+                GRenderingEngine = new VulkanEngine{};
+                GRenderingEngine->Initialize(app);
+            }
+            else
+            {
+                GRenderingEngine = new OpenGLEngine{};
+                GRenderingEngine->Initialize(app);
+            }
             break;
         case APP_CMD_TERM_WINDOW:
             // The window is being hidden or closed, clean it up.
-            terminate();
+            if(GRenderingEngine)
+            {
+                GRenderingEngine->Terminate();
+            }
             break;
         default:
             LOGI("event not handled: %d", cmd);

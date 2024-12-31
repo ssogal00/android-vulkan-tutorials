@@ -44,6 +44,22 @@ Matrix Matrix::Transpose() const
     Result.mRows[3] = vcombine_f32(vget_high_f32(tmp1.val[1]), vget_high_f32(tmp2.val[1]));
     return Result;
 }
+void Matrix::MatrixTest()
+{
+    float32x4_t row0{1,2,3,4};
+    float32x4_t row1{5,6,7,8};
+    float32x4_t row2{9,10,11,12};
+    float32x4_t row3{13,14,15,16};
+
+    Matrix temp
+    {
+        row0, row1, row2, row3
+    };
+
+    temp.DebugPrint();
+    temp.Transpose();
+    temp.DebugPrint();
+}
 
 void Matrix::DebugPrint() const
 {
