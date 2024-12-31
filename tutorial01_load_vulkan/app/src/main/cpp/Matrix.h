@@ -28,10 +28,10 @@ public:
     void DebugPrint() const;
 
     static void MatrixTest();
+
+    const static Matrix Identity;
 };
 
 Matrix operator*(const Matrix& lhs, const Matrix& rhs);
-
-
 
 #endif //ASSEMBLYTEST_MATRIX_H

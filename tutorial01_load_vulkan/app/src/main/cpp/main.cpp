@@ -60,7 +60,7 @@ void android_main(struct android_app* app)
             GRenderingEngine->SwapBuffer();
         }
 
-        if(GRenderingEngine)
+        //if(GRenderingEngine)
         {
             //if (ALooper_pollAll(initialized_ ? 1 : 0, nullptr, &events, (void**)&source) >= 0)
             if (ALooper_pollAll(1, nullptr, &events, (void**)&source) >= 0)

@@ -4,6 +4,14 @@
 
 #include "Matrix.h"
 
+const Matrix Matrix::Identity
+{
+    float32x4_t {1,0,0,0},
+    float32x4_t {1,0,0,0},
+    float32x4_t {1,0,0,0},
+    float32x4_t {1,0,0,0},
+};
+
 Matrix::Matrix(float32x4_t row0, float32x4_t row1, float32x4_t row2, float32x4_t row3)
 {
     mRows[0]=row0;
