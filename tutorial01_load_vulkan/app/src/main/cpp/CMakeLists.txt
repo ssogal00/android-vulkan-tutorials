@@ -40,4 +40,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_link_libraries(${CMAKE_PROJECT_NAME}
     game-activity::game-activity
     log
-    android)
+    android
+    cpu_features
+    EGL)
