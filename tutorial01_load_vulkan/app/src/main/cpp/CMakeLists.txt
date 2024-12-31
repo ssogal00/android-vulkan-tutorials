@@ -27,19 +27,31 @@ get_filename_component(REPO_ROOT_DIR
     ${CMAKE_SOURCE_DIR}/../../../../..  ABSOLUTE)
 set(COMMON_DIR ${REPO_ROOT_DIR}/common)
 
-add_library(${CMAKE_PROJECT_NAME} SHARED
-    main.cpp
-    ${COMMON_DIR}/vulkan_wrapper/vulkan_wrapper.cpp
-    ${COMMON_DIR}/src/GameActivitySources.cpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++11 \
-                     -DVK_USE_PLATFORM_ANDROID_KHR")
+file(GLOB SOURCES "*.cpp")
+file(GLOB HEADERS "*.h")
+
+add_library(cpu_features STATIC ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c)
+
+add_library(${CMAKE_PROJECT_NAME} SHARED
+    ${SOURCES}
+    ${HEADERS}
+    ${COMMON_DIR}/vulkan_wrapper/vulkan_wrapper.cpp
+    ${COMMON_DIR}/src/GameActivitySources.cpp
+        )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++17 -Werror -DVK_USE_PLATFORM_ANDROID_KHR")
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${COMMON_DIR}/vulkan_wrapper)
+
+#target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -mfloat-abi=hard)
+
 target_link_libraries(${CMAKE_PROJECT_NAME}
     game-activity::game-activity
     log
     android
-    cpu_features
-    EGL)
+    EGL
+    GLESv3
+    GLESv2
+    cpu_features)

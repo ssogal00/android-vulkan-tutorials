@@ -18,6 +18,12 @@
 #include <vulkan_wrapper.h>
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 
+#include "Vector.h"
+#include "OpenGLEngine.h"
+#include <chrono>
+
+OpenGLEngine* GOpenGLEngine = nullptr;
+
 // Android log function wrappers
 static const char* kTAG = "Vulkan-Tutorial01";
 #define LOGI(...) \
@@ -52,18 +58,41 @@ void android_main(struct android_app* state);
 void terminate(void);
 void handle_cmd(android_app* app, int32_t cmd);
 
-// typical Android NativeActivity entry function
-void android_main(struct android_app* app) {
-  app->onAppCmd = handle_cmd;
+void HandleOpenGLCmd(android_app* app, int32_t cmd);
 
-  int events;
-  android_poll_source* source;
-  do {
-    if (ALooper_pollAll(initialized_ ? 1 : 0, nullptr, &events,
-                        (void**)&source) >= 0) {
-      if (source != NULL) source->process(app, source);
-    }
-  } while (app->destroyRequested == 0);
+// typical Android NativeActivity entry function
+void android_main(struct android_app* app)
+{
+    Vector4::Vector4Test();
+
+    app->onAppCmd = HandleOpenGLCmd;
+
+    int events;
+    android_poll_source* source;
+
+    auto prevTime = std::chrono::high_resolution_clock::now();
+
+    do
+    {
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - prevTime);
+
+        prevTime = std::chrono::high_resolution_clock::now();
+
+        if(GOpenGLEngine)
+        {
+            GOpenGLEngine->Tick(elapsed.count() / 1000.f);
+            GOpenGLEngine->Clear();
+            GOpenGLEngine->SwapBuffer();
+        }
+
+        if (ALooper_pollAll(initialized_ ? 1 : 0, nullptr, &events, (void**)&source) >= 0)
+        {
+            if (source != NULL)
+            {
+                source->process(app, source);
+            }
+        }
+    } while (app->destroyRequested == 0);
 }
 
 bool initialize(android_app* app) {
@@ -207,6 +236,24 @@ void terminate(void) {
   initialized_ = false;
 }
 
+
+
+void HandleOpenGLCmd(android_app* app, int32_t cmd)
+{
+    switch (cmd)
+    {
+        case APP_CMD_INIT_WINDOW:
+            GOpenGLEngine = new OpenGLEngine{};
+            GOpenGLEngine->Initialize(app);
+            break;
+        case APP_CMD_TERM_WINDOW:
+            // The window is being hidden or closed, clean it up.
+            terminate();
+            break;
+        default:
+            LOGI("event not handled: %d", cmd);
+    }
+}
 // Process the next main command.
 void handle_cmd(android_app* app, int32_t cmd) {
   switch (cmd) {
