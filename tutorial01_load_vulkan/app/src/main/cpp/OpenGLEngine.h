@@ -17,6 +17,8 @@ public:
     void OnResume(class android_app* app) override;
     void Terminate() override;
 private:
+    void CreateTestResources();
+
     EGLDisplay mDisplay = EGL_NO_DISPLAY;
     EGLSurface  mSurface = EGL_NO_SURFACE;
     EGLContext mEGLContext = EGL_NO_CONTEXT;
@@ -26,5 +28,12 @@ private:
     float mElapsedSec=0;
     EGLConfig* mConfigList;
     int mSelectedConfigIndex = -1;
+
+    //
+    GLuint mVertexBuffer;
+    GLuint mVertexShader;
+    GLuint mFragmentShader;
+    GLuint mProgram;
+
 };
 

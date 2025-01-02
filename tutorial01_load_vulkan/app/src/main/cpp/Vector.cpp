@@ -4,6 +4,30 @@
 #include <android/log.h>
 #include <cmath>
 
+float Vector4::X()
+{
+    float32x2_t low = vget_low_f32(mValue);
+    return vget_lane_f32(low,0);
+}
+
+float Vector4::Y()
+{
+    float32x2_t low = vget_low_f32(mValue);
+    return vget_lane_f32(low,1);
+}
+
+float Vector4::Z()
+{
+    float32x2_t high = vget_high_f32(mValue);
+    return vget_lane_f32(high,0);
+}
+
+float Vector4::W()
+{
+    float32x2_t high = vget_high_f32(mValue);
+    return vget_lane_f32(high,0);
+}
+
 Vector4::Vector4(float fX, float fY, float fZ, float fW)
 {
     float values[4] = {fX, fY, fZ, fW};

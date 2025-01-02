@@ -7,9 +7,9 @@
 const Matrix Matrix::Identity
 {
     float32x4_t {1,0,0,0},
-    float32x4_t {1,0,0,0},
-    float32x4_t {1,0,0,0},
-    float32x4_t {1,0,0,0},
+    float32x4_t {0,1,0,0},
+    float32x4_t {0,0,1,0},
+    float32x4_t {0,0,0,1},
 };
 
 Matrix::Matrix(float32x4_t row0, float32x4_t row1, float32x4_t row2, float32x4_t row3)
@@ -20,9 +20,36 @@ Matrix::Matrix(float32x4_t row0, float32x4_t row1, float32x4_t row2, float32x4_t
     mRows[3]=row3;
 }
 
+Matrix::Matrix()
+{
+    mRows[0]=float32x4_t{0,0,0,0};
+    mRows[1]=float32x4_t{0,0,0,0};
+    mRows[2]=float32x4_t{0,0,0,0};
+    mRows[3]=float32x4_t{0,0,0,0};
+}
+
 Matrix operator*(const Matrix& lhs, const Matrix& rhs)
 {
-    return Matrix{};
+    Matrix result{};
+    for (int i = 0; i < 4; i++)
+    {
+        float32x4_t sum = vmovq_n_f32(0.0f);
+        {
+            float32x4_t a = vdupq_n_f32(vgetq_lane_f32(lhs.mRows[i], 0));
+            sum = vmlaq_f32(sum, a, rhs.mRows[0]);
+
+            a = vdupq_n_f32(vgetq_lane_f32(lhs.mRows[i], 1));
+            sum = vmlaq_f32(sum, a, rhs.mRows[1]);
+
+            a = vdupq_n_f32(vgetq_lane_f32(lhs.mRows[i], 2));
+            sum = vmlaq_f32(sum, a, rhs.mRows[2]);
+
+            a = vdupq_n_f32(vgetq_lane_f32(lhs.mRows[i], 3));
+            sum = vmlaq_f32(sum, a, rhs.mRows[3]);
+        }
+        result.mRows[i] = sum;
+    }
+    return result;
 }
 
 Matrix operator+(const Matrix& lhs, const Matrix& rhs)
@@ -72,10 +99,16 @@ void Matrix::MatrixTest()
     temp.DebugPrint();
     temp.Transpose();
     temp.DebugPrint();
+    temp.Transpose();
+
+    Matrix multTest = temp * temp;
+    multTest.DebugPrint();
 }
 
 void Matrix::DebugPrint() const
 {
+    __android_log_print(ANDROID_LOG_INFO, "[Vulkan]", "===========Matrix4X4===========");
+
     float value0 = vgetq_lane_f32(mRows[0], 0);
     float value1 = vgetq_lane_f32(mRows[0], 1); //
     float value2 = vgetq_lane_f32(mRows[0], 2); //
@@ -104,4 +137,5 @@ void Matrix::DebugPrint() const
     value3 = vgetq_lane_f32(mRows[3], 3); //
 
     __android_log_print(ANDROID_LOG_INFO, "[Vulkan]", "|%.4f,%.4f,%.4f,%.4f|", value0, value1, value2, value3);
+    __android_log_print(ANDROID_LOG_INFO, "[Vulkan]", "=============================");
 }

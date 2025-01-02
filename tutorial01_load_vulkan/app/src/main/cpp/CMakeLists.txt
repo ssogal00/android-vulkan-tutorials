@@ -40,7 +40,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
     ${COMMON_DIR}/src/GameActivitySources.cpp
         )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++17 -Werror -DVK_USE_PLATFORM_ANDROID_KHR")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++20 -Werror -DVK_USE_PLATFORM_ANDROID_KHR")
+
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${COMMON_DIR}/vulkan_wrapper)

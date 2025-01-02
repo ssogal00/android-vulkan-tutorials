@@ -252,6 +252,48 @@ void OpenGLEngine::OnResume(android_app* app)
     eglMakeCurrent(mDisplay,mSurface,mSurface, mEGLContext);
 }
 
-void OpenGLEngine::Terminate() {
+void OpenGLEngine::Terminate()
+{
+
+}
+
+static const char* vertex_shader_text =
+        "#version 100\n"
+        "precision mediump float;\n"
+        "uniform mat4 MVP;\n"
+        "attribute vec3 vCol;\n"
+        "attribute vec2 vPos;\n"
+        "varying vec3 color;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+        "    color = vCol;\n"
+        "}\n";
+
+
+static const char* fragment_shader_text =
+        "#version 100\n"
+        "precision mediump float;\n"
+        "varying vec3 color;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_FragColor = vec4(color, 1.0);\n"
+        "}\n";
+
+void OpenGLEngine::CreateTestResources()
+{
+    mVertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(mVertexShader, 1, &vertex_shader_text, nullptr);
+    glCompileShader(mVertexShader);
+
+    mFragmentShader= glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(mFragmentShader, 1, &fragment_shader_text, nullptr);
+    glCompileShader(mFragmentShader);
+
+    mProgram = glCreateProgram();
+    glAttachShader(mProgram, mVertexShader);
+    glAttachShader(mProgram, mFragmentShader);
+    glLinkProgram(mProgram);
+
 
 }

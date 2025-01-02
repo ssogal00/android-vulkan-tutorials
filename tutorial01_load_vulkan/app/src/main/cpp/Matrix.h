@@ -10,7 +10,7 @@
 class alignas(16) Matrix
 {
 public:
-    Matrix(){}
+    Matrix();
     Matrix(float32x4_t row0, float32x4_t row1, float32x4_t row2, float32x4_t row3);
     friend Matrix operator*(const Matrix& lhs, const Matrix& rhs);
     friend Matrix operator+(const Matrix& lhs, const Matrix& rhs);
@@ -30,6 +30,7 @@ public:
     static void MatrixTest();
 
     const static Matrix Identity;
+    const static Matrix Zero;
 };
 
 Matrix operator*(const Matrix& lhs, const Matrix& rhs);
