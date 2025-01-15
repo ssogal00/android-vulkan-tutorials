@@ -6,6 +6,7 @@
 #include <arm_neon.h>
 #include <android/log.h>
 
+#define TO_RADIAN(degree) ((degree) / (3.141592653f / 180.f))
 
 class alignas(16) Matrix
 {
@@ -38,5 +39,7 @@ public:
 };
 
 Matrix operator*(const Matrix& lhs, const Matrix& rhs);
+
+Matrix RotateZ(const Matrix& lhs, const float angle);
 
 #endif //ASSEMBLYTEST_MATRIX_H

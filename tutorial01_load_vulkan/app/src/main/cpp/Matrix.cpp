@@ -3,6 +3,7 @@
 //
 
 #include "Matrix.h"
+#include <cmath>
 
 const Matrix Matrix::Identity
 {
@@ -27,6 +28,8 @@ Matrix Matrix::Ortho(float l, float r, float b , float t, float n , float f)
 
     return Result;
 }
+
+
 
 Matrix Matrix::Perspective(float fov, float aspect, float near, float far)
 {
@@ -86,6 +89,24 @@ Matrix operator+(const Matrix& lhs, const Matrix& rhs)
 
     return result;
 }
+
+Matrix RotateZ(const Matrix& lhs, const float angle)
+{
+    Matrix Result{};
+    float s = std::sinf(angle);
+    float c = std::cosf(angle);
+
+    Matrix R
+    {
+            float32x4_t{c,s,0,0},
+            float32x4_t{-s,c,0,0},
+            float32x4_t{0,0,1,0},
+            float32x4_t {0,0,0,1}
+    };
+
+    return R * lhs;
+}
+
 void Matrix::Transpose()
 {
     float32x4x2_t tmp1 = vtrnq_f32(mRows[0], mRows[1]);

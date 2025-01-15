@@ -268,8 +268,13 @@ void OpenGLEngine::Render()
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUseProgram(mProgram);
+
     const float ratio = mWidth / (float) mHeight;
+
+    mRotateAngle = mElapsedSec * 0.01;
+
     Matrix Mvp = Matrix::Ortho(-ratio, ratio, -1,1,1,-1);
+    Mvp = RotateZ(Mvp, TO_RADIAN(mRotateAngle));
 
     const GLint mvp_location = glGetUniformLocation(mProgram, "MVP");
 

@@ -51,5 +51,6 @@ private:
     GLuint mFragmentShader;
     GLuint mProgram;
     GLuint mVertexArray;
+    float mRotateAngle=0;
 };
 
