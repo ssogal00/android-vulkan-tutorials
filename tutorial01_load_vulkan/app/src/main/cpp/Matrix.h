@@ -29,6 +29,10 @@ public:
 
     static void MatrixTest();
 
+    static Matrix Ortho(float l, float r, float b , float t, float n , float f);
+
+    static Matrix Perspective(float fov, float aspect, float near, float far);
+
     const static Matrix Identity;
     const static Matrix Zero;
 };

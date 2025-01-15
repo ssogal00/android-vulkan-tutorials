@@ -56,7 +56,7 @@ void android_main(struct android_app* app)
         if(GRenderingEngine)
         {
             GRenderingEngine->Tick(elapsed.count() / 1000.f);
-            GRenderingEngine->Clear();
+            //GRenderingEngine->Clear();
             GRenderingEngine->SwapBuffer();
         }
 

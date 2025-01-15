@@ -4,6 +4,19 @@
 #include <android/log.h>
 #include <cmath>
 
+Vector2::Vector2(float fX, float fY)
+{
+    float values[2] = {fX, fY};
+
+    mValue = vld1_f32(values);
+}
+
+Vector3::Vector3(float fX, float fY, float fZ)
+{
+    float values[4] = {fX, fY, fZ, 0};
+    mValue = vld1q_f32(values);
+}
+
 float Vector4::X()
 {
     float32x2_t low = vget_low_f32(mValue);

@@ -12,6 +12,30 @@ const Matrix Matrix::Identity
     float32x4_t {0,0,0,1},
 };
 
+Matrix Matrix::Ortho(float l, float r, float b , float t, float n , float f)
+{
+    Matrix Result{};
+    float32x4_t rows0{ 2.f/(r-l), 0, 0, 0};
+    float32x4_t rows1{ 0, 2.f/(t-b), 0, 0};
+    float32x4_t rows2{ 0, 0, -2.f/(f-n), 0};
+    float32x4_t rows3{ -1* (r+l)/(r-l), -1 * (t+b)/(t-b), -1.f * (f+n)/(f-n), 1.f };
+
+    Result.mRows[0] = rows0;
+    Result.mRows[1] = rows1;
+    Result.mRows[2] = rows2;
+    Result.mRows[3] = rows3;
+
+    return Result;
+}
+
+Matrix Matrix::Perspective(float fov, float aspect, float near, float far)
+{
+    Matrix Result{};
+    return Result;
+}
+
+
+
 Matrix::Matrix(float32x4_t row0, float32x4_t row1, float32x4_t row2, float32x4_t row3)
 {
     mRows[0]=row0;

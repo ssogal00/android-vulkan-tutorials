@@ -10,6 +10,7 @@
 #include <android/log.h>
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include <cmath>
+#include "Matrix.h"
 #define LOG_TAG "[MyEGL]"
 
 const  int EGLMinRedBits		= 8;
@@ -203,12 +204,15 @@ bool OpenGLEngine::Initialize(android_app* app)
 
     mInitialized=true;
 
+    CreateTestResources();
+
     return true;
 }
 
 void OpenGLEngine::Tick(float Seconds)
 {
     mElapsedSec += Seconds;
+    Render();
 }
 
 void OpenGLEngine::Clear()
@@ -257,6 +261,24 @@ void OpenGLEngine::Terminate()
 
 }
 
+void OpenGLEngine::Render()
+{
+    glViewport(0,0, mWidth, mHeight);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(mProgram);
+    const float ratio = mWidth / (float) mHeight;
+    Matrix Mvp = Matrix::Ortho(-ratio, ratio, -1,1,1,-1);
+
+    const GLint mvp_location = glGetUniformLocation(mProgram, "MVP");
+
+    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) &Mvp.mRows[0]);
+    glBindVertexArray(mVertexArray);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+}
+
 static const char* vertex_shader_text =
         "#version 100\n"
         "precision mediump float;\n"
@@ -282,6 +304,11 @@ static const char* fragment_shader_text =
 
 void OpenGLEngine::CreateTestResources()
 {
+
+    glGenBuffers(1, &mVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+
     mVertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(mVertexShader, 1, &vertex_shader_text, nullptr);
     glCompileShader(mVertexShader);
@@ -295,5 +322,18 @@ void OpenGLEngine::CreateTestResources()
     glAttachShader(mProgram, mFragmentShader);
     glLinkProgram(mProgram);
 
+    const GLint vpos_location = glGetAttribLocation(mProgram, "vPos");
+    const GLint vcol_location = glGetAttribLocation(mProgram, "vCol");
+
+
+    glGenVertexArrays(1, &mVertexArray);
+    glBindVertexArray(mVertexArray);
+
+    glEnableVertexAttribArray(vpos_location);
+    glEnableVertexAttribArray(vcol_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(Vertex), (void*) offsetof(Vertex, Position));
+    glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
+                          sizeof(Vertex), (void*) offsetof(Vertex, Color));
 
 }

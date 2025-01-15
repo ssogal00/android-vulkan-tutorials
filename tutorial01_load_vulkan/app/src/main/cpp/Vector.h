@@ -10,6 +10,8 @@ class alignas(16) Vector2
 public:
     friend Vector2 operator+(const Vector2& lhs, const Vector2& rhs);
 
+    Vector2(float fX, float fY);
+
     float X();
     float Y();
 protected:
@@ -26,7 +28,6 @@ public:
 
 protected:
     float32x4_t mValue;
-
 };
 
 class alignas(16) Vector4
