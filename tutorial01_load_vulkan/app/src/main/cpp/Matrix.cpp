@@ -34,6 +34,21 @@ Matrix Matrix::Ortho(float l, float r, float b , float t, float n , float f)
 Matrix Matrix::Perspective(float fov, float aspect, float near, float far)
 {
     Matrix Result{};
+
+    float const a = 1.f / tanf(fov * 0.5f);
+
+    float32x4_t rows0{ a/aspect, 0, 0, 0};
+    float32x4_t rows1{ 0, a, 0, 0};
+    float m22 = -((far+near)/(far-near));
+    float m32 = -((2.f * far * near)/(far-near));
+    float32x4_t rows2{ 0,0, m22 ,-1};
+    float32x4_t rows3{ 0,0, m32 ,0};
+
+    Result.mRows[0] = rows0;
+    Result.mRows[1] = rows1;
+    Result.mRows[2] = rows2;
+    Result.mRows[3] = rows3;
+
     return Result;
 }
 
@@ -106,6 +121,24 @@ Matrix RotateZ(const Matrix& lhs, const float angle)
 
     return R * lhs;
 }
+
+Matrix RotateX(const Matrix& lhs, const float angle)
+{
+    Matrix Result{};
+    float s = std::sinf(angle);
+    float c = std::cosf(angle);
+
+    Matrix R
+    {
+            float32x4_t{1,0,0,0},
+            float32x4_t{0,c,s,0},
+            float32x4_t{0,-s,c,0},
+            float32x4_t {0,0,0,1}
+    };
+
+    return R * lhs;
+}
+
 
 void Matrix::Transpose()
 {

@@ -42,4 +42,8 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs);
 
 Matrix RotateZ(const Matrix& lhs, const float angle);
 
+Matrix RotateX(const Matrix& lhs, const float angle);
+
+Matrix RotateY(const Matrix& lhs, const float angle);
+
 #endif //ASSEMBLYTEST_MATRIX_H
