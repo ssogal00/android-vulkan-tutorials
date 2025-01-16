@@ -8,12 +8,17 @@
 class alignas(16) Vector2
 {
 public:
+    Vector2(float32x2_t InValue) : mValue(InValue){}
     friend Vector2 operator+(const Vector2& lhs, const Vector2& rhs);
 
     Vector2(float fX, float fY);
 
     float X();
     float Y();
+    void Normalize();
+    Vector2 Normalize()const;
+    float SquareLength() const;
+
 protected:
     float32x2_t mValue;
 };
@@ -25,6 +30,9 @@ public:
 
     Vector3(float fX, float fY, float fZ);
     Vector3(float32x4_t InValue) : mValue(InValue){}
+
+
+    friend Vector3 operator+(const Vector3& lhs, const Vector3& rhs);
 
 protected:
     float32x4_t mValue;
@@ -61,6 +69,9 @@ protected:
 
 Vector4 operator+(const Vector4& lhs, const Vector4& rhs);
 Vector4 operator-(const Vector4& lhs, const Vector4& rhs);
+
+Vector3 operator+(const Vector3& lhs, const Vector3& rhs);
+
 float Dot(const Vector4& lhs, const Vector4& rhs);
 
 

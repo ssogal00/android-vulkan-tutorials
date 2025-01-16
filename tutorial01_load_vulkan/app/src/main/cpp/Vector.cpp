@@ -11,6 +11,22 @@ Vector2::Vector2(float fX, float fY)
     mValue = vld1_f32(values);
 }
 
+float Vector2::SquareLength() const
+{
+    float32x2_t Squared = vmul_f32(mValue, mValue);
+
+    float32x2_t Intermediate = vpadd_f32(Squared,Squared);
+
+    return vget_lane_f32(Intermediate,0);
+}
+
+Vector2 Vector2::Normalize() const
+{
+    float InvLength = 1 / sqrt(SquareLength());
+    float32x2_t Intermediate = vmul_f32(mValue, vdup_n_f32(InvLength));
+    return Vector2 {Intermediate};
+}
+
 Vector3::Vector3(float fX, float fY, float fZ)
 {
     float values[4] = {fX, fY, fZ, 0};
@@ -58,6 +74,12 @@ Vector4 operator-(const Vector4& lhs, const Vector4& rhs)
 {
     Vector4 result{ vsubq_f32(lhs.mValue, rhs.mValue)};
     return result;
+}
+
+Vector3 operator+(const Vector3& A, const Vector3& B)
+{
+    Vector3 Result{};
+    Result.mValue = vaddq_f32(A.mValue, B.mValue);
 }
 
 float Dot(const Vector4& lhs, const Vector4& rhs)

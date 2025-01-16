@@ -309,7 +309,6 @@ static const char* fragment_shader_text =
 
 void OpenGLEngine::CreateTestResources()
 {
-
     glGenBuffers(1, &mVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
