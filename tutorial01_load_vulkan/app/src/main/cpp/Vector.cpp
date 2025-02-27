@@ -95,6 +95,7 @@ float Vector4::Length() const
     float32x2_t intermediate = vadd_f32(vget_high_f32(sum), vget_low_f32(sum));
     float squaredLength = vget_lane_f32(vpadd_f32(intermediate, intermediate), 0);
     return std::sqrt(squaredLength);
+
 }
 
 float Vector4::SquareLength() const
